@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beshoy Hany - Task Manager</title>
+    <link rel="stylesheet" href="page.css">
+</head>
+<body>
+
+    <div class="container">
+        <section id="page1" class="page active">
+            <div class="card">
+                <h1>Login</h1>
+                <input type="text" id="usernameInput" placeholder="Enter your name">
+                <br>
+                <button onclick="goToPage2()">Next</button>
+            </div>
+        </section>
+
+        <section id="page2" class="page">
+            <div id="welcomeScreen" class="welcome-txt"></div>
+            
+            <div id="taskModule" class="card" style="display: none;">
+                <div id="infoArea" class="info-banner"></div>
+                <h2>What tasks do we have today?</h2>
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="Add a task...">
+                    <button onclick="addTask()">Add</button>
+                </div>
+                <ul id="taskList"></ul>
+                <button onclick="goToPage3()" class="nav-btn">Next</button>
+            </div>
+        </section>
+
+        <section id="page3" class="page">
+            <div class="card review-card">
+                <div class="left-align-section">
+                    <h2>What did you accomplish today?</h2>
+                    <ul id="accomplishList"></ul>
+                </div>
+    <hr class="divider">
+
+    <div class="card">
+    <div id="postponeQuestionArea">
+        <h3>Do you want to postpone some tasks to tomorrow?</h3>
+        <button class="choice-btn" onclick="handleFinalChoice('yes')">Yes</button>
+        <button class="choice-btn" onclick="handleFinalChoice('no')">No</button>
+    </div>
+
+    <div id="postponeInputArea" style="display: none;">
+        <h3>What do you want to postpone until tomorrow?</h3>
+        <input type="text" id="postponeInput" placeholder="Enter task...">
+        <button onclick="addPostpone()">Add</button>
+    </div>
+
+    <div id="efficiencyMsg" style="display: none; color: #00e676; margin: 15px 0;">
+        You have completed your tasks efficiently!
+    </div>
+
+    <button onclick="showFinish()" class="finish-btn" style="margin-top: 20px;">Finish</button>
+
+    <p id="thankYouMsg" style="display: none; margin-top: 20px; font-weight: bold;">
+        made by Beshoy Hany 2026, thank you
+    </p>
+</div>
+
+</section>
+</div>
+<footer>
+        <p class="copyright">© beshoyhany.BH 2026</p>
+        <div class="links">
+            <a href="https://www.instagram.com/boshaa_hany222/#" target="_blank">Instagram</a> | 
+            <a href="https://www.facebook.com/anabisho.hany" target="_blank">Facebook</a> | 
+            <a href="mailto:byshwhany330@gmail.com">Email</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
