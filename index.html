@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Project Web Application Workspace</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            font-size: 11pt;
+            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 15px;
+            flex: 1;
+        }
+
+        /* 3-Page Tab Navigation Styling */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background-color: #1e293b;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            background-color: transparent;
+            color: #94a3b8;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .nav-tab.active {
+            background-color: #0f172a;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .page {
+            display: none;
+            padding: 10px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Distinct Page Title Styling */
+        .page-title {
+            font-size: 20pt;
+            color: #ffffff;
+            margin-bottom: 5px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #334155;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .page-subtitle {
+            color: #94a3b8;
+            font-size: 11pt;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .project-card {
+            background-color: #1e293b;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            margin-bottom: 20px;
+        }
+
+        /* Component Themes */
+        .card-todo { border-left: 5px solid #3b82f6; }
+        .card-palette { border-left: 5px solid #10b981; }
+        .card-table { border-left: 5px solid #8b5cf6; }
+
+        .section-header {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #f1f5f9;
+        }
+
+        /* Controls & Inputs */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], select {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 10pt;
+            flex: 1;
+            outline: none;
+        }
+
+        button {
+            background-color: #334155;
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 10pt;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-todo { background-color: #3b82f6; }
+        .btn-palette { background-color: #10b981; }
+        .btn-table { background-color: #8b5cf6; }
+        .btn-danger { background-color: #ef4444; }
+
+        /* Project 1: Todo Specifics */
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0f172a;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .todo-actions button {
+            padding: 5px 10px;
+            font-size: 9pt;
+        }
+
+        /* Project 2: Palette Specifics */
+        .palette-grid {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .color-card {
+            flex: 1;
+            height: 160px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 15px;
+            font-weight: bold;
+            font-size: 10pt;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            cursor: pointer;
+        }
+
+        /* Project 3: Table Grid Form */
+        .table-form-grid {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: #0f172a;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background-color: #1e293b;
+            color: #8b5cf6;
+            text-transform: uppercase;
+            font-size: 10pt;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        .badge-active { background-color: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-pending { background-color: rgba(234, 179, 8, 0.2); color: #eab308; }
+        .badge-inactive { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        /* Footer Styling */
+        footer {
+            background-color: #1e293b;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #334155;
+        }
+        footer .copyright {
+            margin: 0 0 10px 0;
+            font-weight: bold;
+            color: #f8fafc;
+        }
+        footer .links a {
+            color: #3b82f6;
+            text-decoration: none;
+            margin: 0 5px;
+            transition: color 0.2s;
+        }
+        footer .links a:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('page1')">Page 1: To-Do App</button>
+            <button class="nav-tab" onclick="switchTab('page2')">Page 2: Palette Generator</button>
+            <button class="nav-tab" onclick="switchTab('page3')">Page 3: Dynamic Table</button>
+        </div>
+
+        <div id="page1" class="page active">
+            <h1 class="page-title">Mini-Project 1: To-Do List App</h1>
+            <p class="page-subtitle">Track, edit and clean up your daily task entries dynamically.</p>
+            
+            <div class="project-card card-todo">
+                <div class="section-header">Task Manager</div>
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="Enter a new task description...">
+                    <button class="btn-todo" onclick="addTask()">Add Task</button>
+                </div>
+                
+                <div id="taskList">
+                    </div>
+            </div>
+        </div>
+
+        <div id="page2" class="page">
+            <h1 class="page-title">Mini-Project 2: Color Palette Generator</h1>
+            <p class="page-subtitle">Generate hex combinations and tap to copy them onto your clipboard.</p>
+            
+            <div class="project-card card-palette">
+                <div class="section-header">Random Color Grid</div>
+                <button class="btn-palette" onclick="generatePalette()" style="margin-bottom: 15px;">Generate New Mix</button>
+                <div class="palette-grid" id="paletteContainer"></div>
+            </div>
+        </div>
+
+        <div id="page3" class="page">
+            <h1 class="page-title">Mini-Project 3: Dynamic Table Builder</h1>
+            <p class="page-subtitle">Input your custom names, assign roles, and build your data grid live.</p>
+            
+            <div class="project-card card-table">
+                <div class="section-header">Add New Row Manually</div>
+                
+                <div class="table-form-grid">
+                    <input type="text" id="tableName" placeholder="Employee Name (e.g., Sarah Connor)">
+                    <input type="text" id="tableRole" placeholder="Role (e.g., QA Engineer)">
+                    <select id="tableStatus">
+                        <option value="Active">Active</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                    <button class="btn-table" onclick="addCustomRow()">Insert Row</button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">ID</th>
+                            <th style="width: 40%;">Name</th>
+                            <th style="width: 30%;">Role</th>
+                            <th style="width: 20%;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p class="copyright">© beshoyhany.BH 2026</p>
+        <div class="links">
+            <a href="https://www.instagram.com/boshaa_hany222/#" target="_blank">Instagram</a> | 
+            <a href="https://www.facebook.com/anabisho.hany" target="_blank">Facebook</a> | 
+            <a href="mailto:byshwhany330@gmail.com">Email</a>
+        </div>
+    </footer>
+
+    <script>
+        // Tab system logic (Mimicking 3 Pages)
+        function switchTab(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- Project 1: To-Do App Logic ---
+        let tasks = []; // Empty array to start fresh
+
+        function renderTasks() {
+            const container = document.getElementById('taskList');
+            container.innerHTML = '';
+            tasks.forEach(task => {
+                const item = document.createElement('div');
+                item.className = 'todo-item';
+                item.innerHTML = `
+                    <span>${task.text}</span>
+                    <div class="todo-actions">
+                        <button onclick="editTask(${task.id})">Edit</button>
+                        <button class="btn-danger" onclick="deleteTask(${task.id})">Delete</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            if (!input.value.trim()) return;
+            tasks.push({ id: Date.now(), text: input.value.trim() });
+            input.value = '';
+            renderTasks();
+        }
+
+        function editTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+            const updated = prompt("Update task:", task.text);
+            if (updated && updated.trim()) {
+                task.text = updated.trim();
+                renderTasks();
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            renderTasks();
+        }
+
+        // --- Project 2: Palette Logic ---
+        function generatePalette() {
+            const container = document.getElementById('paletteContainer');
+            container.innerHTML = '';
+            const letters = '0123456789ABCDEF';
+            for (let i = 0; i < 5; i++) {
+                let color = '#';
+                for (let j = 0; j < 6; j++) color += letters[Math.floor(Math.random() * 16)];
+                
+                const card = document.createElement('div');
+                card.className = 'color-card';
+                card.style.backgroundColor = color;
+                card.innerHTML = `<span>${color}</span>`;
+                card.onclick = () => {
+                    navigator.clipboard.writeText(color);
+                    alert("Copied color code: " + color);
+                };
+                container.appendChild(card);
+            }
+        }
+
+        // --- Project 3: Table Builder Logic ---
+        let currentId = 0;
+
+        function addCustomRow() {
+            const nameInput = document.getElementById('tableName');
+            const roleInput = document.getElementById('tableRole');
+            const statusInput = document.getElementById('tableStatus');
+
+            if (!nameInput.value.trim() || !roleInput.value.trim()) {
+                alert("Please fill in both Name and Role fields.");
+                return;
+            }
+
+            currentId++;
+            const tbody = document.getElementById('tableBody');
+            const tr = document.createElement('tr');
+
+            let statusClass = 'badge-active';
+            if (statusInput.value === 'Pending') statusClass = 'badge-pending';
+            if (statusInput.value === 'Inactive') statusClass = 'badge-inactive';
+
+            tr.innerHTML = `
+                <td>${currentId}</td>
+                <td>${nameInput.value.trim()}</td>
+                <td>${roleInput.value.trim()}</td>
+                <td><span class="badge ${statusClass}">${statusInput.value}</span></td>
+            `;
+            tbody.appendChild(tr);
+
+            // Clear inputs
+            nameInput.value = '';
+            roleInput.value = '';
+            statusInput.value = 'Active';
+        }
+
+        window.onload = function() {
+            generatePalette();
+        };
+    </script>
+</body>
+</html>
